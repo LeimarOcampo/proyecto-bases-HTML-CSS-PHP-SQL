@@ -1,0 +1,40 @@
+Nombre base de datos: proyecto3bases
+
+CREATE TABLE carnivoro
+(codAnimal VARCHAR(255) PRIMARY KEY,
+ nombre VARCHAR(20) NOT NULL,
+ comidaFavorita VARCHAR(20) NOT NULL CHECK (comidaFavorita = 'pescado' OR comidaFavorita = 'pollo' OR comidaFavorita = 'res'),
+ peso INT NOT NULL
+);
+
+CREATE TABLE herbivoro
+(codAnimal VARCHAR(255) PRIMARY KEY,
+ edad INT NOT NULL,
+ altura INT NOT NULL,
+ frutaFavorita VARCHAR(20) NOT NULL
+);
+ 
+CREATE TABLE patio_de_recreo
+( nombre VARCHAR(255) PRIMARY KEY,
+  fechaIngreso DATE NOT NULL,
+  codHerbivoro VARCHAR(255),
+  codCarnivoro VARCHAR(255) CHECK ((codHerbivoro IS NULL AND codCarnivoro IS NOT NULL) OR (codHerbivoro IS NOT NULL AND codCarnivoro IS NULL)),
+  FOREIGN KEY (codHerbivoro) REFERENCES herbivoro(codAnimal) ON DELETE CASCADE,
+  FOREIGN KEY (codCarnivoro) REFERENCES carnivoro(codAnimal) ON DELETE CASCADE
+) ENGINE = InnoDB;
+
+CREATE TABLE membresia
+( codMembresia INT PRIMARY KEY,
+  color VARCHAR(15),
+  fechaCompra DATE
+);
+
+CREATE TABLE acceso
+( fechaUltimoIngreso DATE NOT NULL,
+  nombrePatio VARCHAR(255) NOT NULL,
+  codMembresia INT NOT NULL,
+  cantVisitas INT NOT NULL,
+  PRIMARY KEY (nombrePatio, codMembresia),
+  FOREIGN KEY (nombrePatio) REFERENCES patio_de_recreo (nombre) ON DELETE CASCADE,
+  FOREIGN KEY (codMembresia) REFERENCES membresia (codMembresia) ON DELETE CASCADE
+) ENGINE = InnoDB;
